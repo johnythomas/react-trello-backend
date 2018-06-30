@@ -1,20 +1,15 @@
 import express from "express"
+import Board from "../models/Board"
 
 const router = express.Router()
 
-const boards = [
-  {
-    id: 1,
-    name: "React"
-  },
-  {
-    id: 2,
-    name: "Daily Work"
+router.get("/", async (req, res) => {
+  try {
+    const boards = await Board.findAll()
+    res.send(boards)
+  } catch (err) {
+    res.send(err)
   }
-]
-
-router.get("/", (req, res) => {
-  res.send(boards)
 })
 
 export default router

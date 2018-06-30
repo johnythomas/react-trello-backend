@@ -2,6 +2,7 @@ import express from "express"
 import logger from "morgan"
 import bodyParser from "body-parser"
 import board from "./routes/board"
+import Board from "./models/Board"
 
 const app = express()
 
@@ -16,6 +17,8 @@ app.use((req, res, next) => {
   err.status = 404
   next(err)
 })
+
+Board.sync()
 
 app.use((err, req, res, next) => {
   res.locals.message = err.message
