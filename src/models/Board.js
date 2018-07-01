@@ -6,7 +6,8 @@ const Board = db.define(
   {
     name: {
       type: Sequelize.STRING,
-      field: "name"
+      field: "name",
+      unique: true
     }
   },
   {
