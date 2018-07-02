@@ -30,4 +30,33 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!req.body.board || !req.body.board.name || !id) {
+      return res.send("mandatory fields missing")
+    }
+
+    const board = await Board.find({ where: { id } })
+
+    if (!board) {
+      return res.send("invalid id")
+    }
+
+    const { name } = req.body.board
+    await Board.update(
+      {
+        name
+      },
+      {
+        where: { id }
+      }
+    )
+    res.send(await Board.find({ where: { id } }))
+  } catch (err) {
+    res.send(err)
+  }
+})
+
 export default router
