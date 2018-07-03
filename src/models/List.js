@@ -1,14 +1,19 @@
 import { Sequelize } from "sequelize"
 import { db } from "../util/config"
-import List from "./List"
+import Board from "./Board"
 
-const Board = db.define(
-  "board",
+const List = db.define(
+  "list",
   {
     name: {
       type: Sequelize.STRING,
       field: "name",
       unique: true
+    },
+    boardId: {
+      type: Sequelize.INTEGER,
+      model: Board,
+      key: "id"
     }
   },
   {
@@ -16,11 +21,4 @@ const Board = db.define(
   }
 )
 
-Board.hasMany(List, {
-  as: "lists",
-  foreignKey: {
-    allowNull: false
-  }
-})
-
-export default Board
+export default List
