@@ -23,4 +23,58 @@ router.get("/:boardId/list/", async (req, res) => {
   }
 })
 
+router.get("/:boardId/list/:listId", async (req, res) => {
+  try {
+    const { listId, boardId } = req.params
+    const list = await List.find({
+      where: {
+        $and: [{ id: listId }, { boardId }]
+      }
+    })
+    return !list ? res.status(404).send("not found") : res.send(list)
+  } catch (err) {
+    res.send(err)
+  }
+})
+
+router.delete("/:boardId/list", async (req, res) => {
+  try {
+    const { boardId } = req.params
+
+    const query = { where: { boardId } }
+
+    const lists = await List.findAll(query)
+    if (lists.length === 0) {
+      return res.status(400).send("not found")
+    }
+
+    await List.destroy(query)
+    res.send("deleted")
+  } catch (err) {
+    res.send(err)
+  }
+})
+
+router.delete("/:boardId/list/:listId", async (req, res) => {
+  try {
+    const { listId, boardId } = req.params
+
+    const query = {
+      where: {
+        $and: [{ id: listId }, { boardId }]
+      }
+    }
+
+    const list = await List.find(query)
+    if (!list) {
+      return res.status(400).send("not found")
+    }
+
+    await List.destroy(query)
+    res.send("deleted")
+  } catch (err) {
+    res.send(err)
+  }
+})
+
 export default router
