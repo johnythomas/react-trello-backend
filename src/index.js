@@ -5,6 +5,7 @@ import board from "./routes/board"
 import list from "./routes/list"
 import Board from "./models/Board"
 import List from "./models/List"
+import Item from "./models/Item"
 
 const app = express()
 
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 
 Board.sync()
 List.sync()
+Item.sync()
 
 app.use((err, req, res) => {
   res.locals.message = err.message

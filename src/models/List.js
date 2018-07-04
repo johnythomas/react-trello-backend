@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize"
 import { db } from "../util/config"
 import Board from "./Board"
+import Item from "./Item"
 
 const List = db.define(
   "list",
@@ -20,5 +21,12 @@ const List = db.define(
     timestamps: true
   }
 )
+
+List.hasMany(Item, {
+  as: "items",
+  foreignKey: {
+    allowNull: false
+  }
+})
 
 export default List
