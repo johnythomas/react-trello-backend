@@ -6,6 +6,7 @@ import list from "./routes/list"
 import Board from "./models/Board"
 import List from "./models/List"
 import Item from "./models/Item"
+import item from "./routes/item"
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use("/board", board)
 app.use("/board", list)
+app.use("/board", item)
 
 app.use((req, res, next) => {
   const err = new Error("Not Found")
