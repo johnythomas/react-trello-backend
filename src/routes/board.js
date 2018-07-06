@@ -1,16 +1,32 @@
 import express from "express"
+import { check, validationResult } from "express-validator/check"
 import Board from "../models/Board"
 
 const router = express.Router()
 
-router.post("/", async (req, res) => {
-  try {
-    const board = await Board.create(req.body.board)
-    res.send(board)
-  } catch (err) {
-    res.send(err)
+router.post(
+  "/",
+  [
+    check("board")
+      .not()
+      .isEmpty(),
+    check("board.name")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() })
+    }
+    try {
+      const board = await Board.create(req.body.board)
+      res.send(board)
+    } catch (err) {
+      res.send(err)
+    }
   }
-})
+)
 
 router.get("/", async (req, res) => {
   try {
@@ -30,33 +46,45 @@ router.get("/:id", async (req, res) => {
   }
 })
 
-router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params
+router.put(
+  "/:id",
+  [
+    check("board")
+      .not()
+      .isEmpty(),
+    check("board.name")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    try {
+      const { id } = req.params
 
-    if (!req.body.board || !req.body.board.name || !id) {
-      return res.send("mandatory fields missing")
-    }
-
-    const board = await Board.find({ where: { id } })
-
-    if (!board) {
-      return res.send("invalid id")
-    }
-
-    const { name } = req.body.board
-    await Board.update(
-      {
-        name
-      },
-      {
-        where: { id }
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
       }
-    )
-    res.send(await Board.find({ where: { id } }))
-  } catch (err) {
-    res.send(err)
+
+      const board = await Board.find({ where: { id } })
+
+      if (!board) {
+        return res.send("invalid id")
+      }
+
+      const { name } = req.body.board
+      await Board.update(
+        {
+          name
+        },
+        {
+          where: { id }
+        }
+      )
+      res.send(await Board.find({ where: { id } }))
+    } catch (err) {
+      res.send(err)
+    }
   }
-})
+)
 
 export default router
