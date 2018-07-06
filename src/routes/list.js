@@ -1,17 +1,33 @@
 import express from "express"
 import List from "../models/List"
+import { check, validationResult } from "express-validator/check"
 
 const router = express.Router()
 
-router.post("/:boardId/list/", async (req, res) => {
-  try {
-    const { list } = req.body
-    list.boardId = req.params.boardId
-    res.send(await List.create(list))
-  } catch (err) {
-    res.send(err)
+router.post(
+  "/:boardId/list/",
+  [
+    check("list", "list cannot be empty")
+      .not()
+      .isEmpty(),
+    check("list.name", "list should have name")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+      }
+      const { list } = req.body
+      list.boardId = req.params.boardId
+      res.send(await List.create(list))
+    } catch (err) {
+      res.send(err)
+    }
   }
-})
+)
 
 router.get("/:boardId/list/", async (req, res) => {
   try {
