@@ -1,20 +1,33 @@
 import { Router } from "express"
 import Item from "../models/Item"
+import { check, validationResult } from "express-validator/check"
 
 const router = Router()
 
-router.post("/:boardId/list/:listId/item", async (req, res) => {
-  try {
-    const item = Item.build({
-      title: req.body.item.title,
-      body: req.body.item.body,
-      listId: req.params.listId
-    })
-    res.send(await item.save())
-  } catch (err) {
-    res.send(err)
+router.post(
+  "/:boardId/list/:listId/item",
+  [
+    check("item.title", "item should have title")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+      }
+      const item = Item.build({
+        title: req.body.item.title,
+        body: req.body.item.body,
+        listId: req.params.listId
+      })
+      res.send(await item.save())
+    } catch (err) {
+      res.send(err)
+    }
   }
-})
+)
 
 router.get("/:boardId/list/:listId/item/", async (req, res) => {
   try {
