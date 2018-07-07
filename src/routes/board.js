@@ -7,10 +7,7 @@ const router = express.Router()
 router.post(
   "/",
   [
-    check("board")
-      .not()
-      .isEmpty(),
-    check("board.name")
+    check("board.name", "Board should have name")
       .not()
       .isEmpty()
   ],

@@ -7,7 +7,7 @@ const router = Router()
 router.post(
   "/:boardId/list/:listId/item",
   [
-    check("item.title", "item should have title")
+    check("item.title", "Item should have title")
       .not()
       .isEmpty()
   ],

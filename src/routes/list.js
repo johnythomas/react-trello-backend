@@ -7,10 +7,7 @@ const router = express.Router()
 router.post(
   "/:boardId/list/",
   [
-    check("list", "list cannot be empty")
-      .not()
-      .isEmpty(),
-    check("list.name", "list should have name")
+    check("list.name", "List should have name")
       .not()
       .isEmpty()
   ],
