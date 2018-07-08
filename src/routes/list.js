@@ -50,6 +50,45 @@ router.get("/:boardId/list/:listId", async (req, res) => {
   }
 })
 
+router.put(
+  "/:boardId/list/:listId",
+  [
+    check("list.name", "List should have name")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+      }
+
+      const { listId, boardId } = req.params
+      const query = {
+        where: {
+          $and: [{ id: listId }, { boardId }]
+        }
+      }
+      const list = await List.find(query)
+      if (!list) {
+        res.status(404).send("List not found")
+      }
+
+      list.name = req.body.list.name
+      await List.update(
+        {
+          name: list.name
+        },
+        query
+      )
+      res.send(list)
+    } catch (err) {
+      res.send(err)
+    }
+  }
+)
+
 router.delete("/:boardId/list", async (req, res) => {
   try {
     const { boardId } = req.params
