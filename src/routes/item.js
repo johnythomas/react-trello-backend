@@ -71,8 +71,12 @@ router.put(
       .isEmpty()
   ],
   async (req, res) => {
-    const { itemId, listId } = req.params
     try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() })
+      }
+      const { itemId, listId } = req.params
       const query = {
         where: {
           $and: [{ id: itemId }, { listId }]
