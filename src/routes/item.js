@@ -63,6 +63,40 @@ router.get("/:boardId/list/:listId/item/:itemId", async (req, res) => {
   }
 })
 
+router.put(
+  "/:boardId/list/:listId/item/:itemId",
+  [
+    check("item.title", "Item should have title")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const { itemId, listId } = req.params
+    try {
+      const query = {
+        where: {
+          $and: [{ id: itemId }, { listId }]
+        }
+      }
+      const item = await Item.find(query)
+
+      if (!item) return res.status("404").send("Item not found")
+
+      await Item.update(
+        {
+          title: req.body.item.title,
+          body: req.body.item.body
+        },
+        query
+      )
+      res.status(204).send()
+    } catch (err) {
+      console.log(err)
+      res.status(500).send(err)
+    }
+  }
+)
+
 router.delete("/:boardId/list/:listId/item/:itemId", async (req, res) => {
   try {
     const { itemId, listId } = req.params
