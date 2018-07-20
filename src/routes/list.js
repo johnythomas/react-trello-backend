@@ -1,6 +1,7 @@
 import express from "express"
 import List from "../models/List"
 import { check, validationResult } from "express-validator/check"
+import Item from "../models/Item"
 
 const router = express.Router()
 
@@ -27,13 +28,19 @@ router.post(
 )
 
 router.get("/:boardId/list/", async (req, res) => {
-  try {
-    const { boardId } = req.params
-    const lists = await List.findAll({ where: { boardId } })
-    res.send(lists)
-  } catch (err) {
-    res.send(err)
-  }
+  // try {
+  const { boardId } = req.params
+  const lists = await List.findAll({
+    where: { boardId },
+    include: [
+      {
+        model: Item,
+        as: "items"
+      }
+    ]
+  })
+  res.send(lists)
+  // } /
 })
 
 router.get("/:boardId/list/:listId", async (req, res) => {

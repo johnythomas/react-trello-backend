@@ -95,7 +95,6 @@ router.put(
       )
       res.status(204).send()
     } catch (err) {
-      console.log(err)
       res.status(500).send(err)
     }
   }
