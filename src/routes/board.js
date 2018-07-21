@@ -1,6 +1,8 @@
 import express from "express"
 import { check, validationResult } from "express-validator/check"
 import Board from "../models/Board"
+import List from "../models/List"
+import Item from "../models/Item"
 
 const router = express.Router()
 
@@ -36,7 +38,21 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const board = await Board.find({ where: { id: req.params.id } })
+    const board = await Board.find({
+      where: {
+        id: req.params.id
+      },
+      include: [
+        {
+          model: List,
+          as: "lists",
+          include: {
+            model: Item,
+            as: "items"
+          }
+        }
+      ]
+    })
     res.send(board)
   } catch (err) {
     res.send(err)
