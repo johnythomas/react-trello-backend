@@ -28,19 +28,21 @@ router.post(
 )
 
 router.get("/:boardId/list/", async (req, res) => {
-  // try {
-  const { boardId } = req.params
-  const lists = await List.findAll({
-    where: { boardId },
-    include: [
-      {
-        model: Item,
-        as: "items"
-      }
-    ]
-  })
-  res.send(lists)
-  // } /
+  try {
+    const { boardId } = req.params
+    const lists = await List.findAll({
+      where: { boardId },
+      include: [
+        {
+          model: Item,
+          as: "items"
+        }
+      ]
+    })
+    res.send(lists)
+  } catch (err) {
+    res.send(err)
+  }
 })
 
 router.get("/:boardId/list/:listId", async (req, res) => {
