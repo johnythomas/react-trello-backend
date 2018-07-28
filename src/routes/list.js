@@ -22,7 +22,7 @@ router.post(
       list.boardId = req.params.boardId
       res.send(await List.create(list))
     } catch (err) {
-      res.send(err)
+      res.status(400).send(err)
     }
   }
 )
@@ -41,7 +41,7 @@ router.get("/:boardId/list/", async (req, res) => {
     })
     res.send(lists)
   } catch (err) {
-    res.send(err)
+    res.status(400).send(err)
   }
 })
 
@@ -55,7 +55,7 @@ router.get("/:boardId/list/:listId", async (req, res) => {
     })
     return !list ? res.status(404).send("not found") : res.send(list)
   } catch (err) {
-    res.send(err)
+    res.status(400).send(err)
   }
 })
 
@@ -93,7 +93,7 @@ router.put(
       )
       res.send(list)
     } catch (err) {
-      res.send(err)
+      res.status(400).send(err)
     }
   }
 )
@@ -112,7 +112,7 @@ router.delete("/:boardId/list", async (req, res) => {
     await List.destroy(query)
     res.send("deleted")
   } catch (err) {
-    res.send(err)
+    res.status(400).send(err)
   }
 })
 
@@ -134,7 +134,7 @@ router.delete("/:boardId/list/:listId", async (req, res) => {
     await List.destroy(query)
     res.send("deleted")
   } catch (err) {
-    res.send(err)
+    res.status(400).send(err)
   }
 })
 
