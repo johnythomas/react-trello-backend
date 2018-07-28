@@ -22,7 +22,7 @@ router.post(
       const board = await Board.create(req.body.board)
       res.send(board)
     } catch (err) {
-      res.send(err)
+      res.status(400).send(err)
     }
   }
 )
