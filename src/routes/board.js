@@ -100,4 +100,21 @@ router.put(
   }
 )
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params
+    const query = {
+      where: { id }
+    }
+    const board = await Board.find(query)
+    if (!board) {
+      return res.status(400).send("not found")
+    }
+    await Board.destroy(query)
+    res.send("deleted")
+  } catch (err) {
+    res.status(400).send(err)
+  }
+})
+
 export default router
